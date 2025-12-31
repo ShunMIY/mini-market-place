@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UsePipes } from '@nestjs/common';
+import { Body, Controller,Param, Post, UsePipes, Get } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import type { CreateOrderInput } from './orders.schemas';
 import { CreateOrderSchema } from './orders.schemas';
@@ -12,5 +12,20 @@ export class OrdersController {
     @UsePipes(new ZodValidationPipe(CreateOrderSchema))
     create(@Body() body: CreateOrderInput){
         return this.orders.create(body);
+    }
+
+    @Post(':id/cancel')
+    cancel(@Param('id') id: string){
+        return this.orders.cancel(id);
+    }
+    
+    @Get(':id')
+    get(@Param('id') id: string){
+        return this.orders.get(id);
+    }
+
+    @Get()
+    list(){
+        return this.orders.list();
     }
 }

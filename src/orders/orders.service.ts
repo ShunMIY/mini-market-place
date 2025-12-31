@@ -1,10 +1,29 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateOrderInput } from './orders.schemas';
+import { OrderStatus } from '@prisma/client';
 
 @Injectable()
 export class OrdersService {
   constructor(private prisma: PrismaService) {}
+
+  async get(orderId: string) {
+    const order = await this.prisma.order.findUnique({
+      where: { id: orderId },
+      include: { lines: true },
+    });
+    if (!order) {
+      throw new NotFoundException(`Order not found: ${orderId}`);
+    }
+    return order;
+  }
+
+  async list() {
+    return this.prisma.order.findMany({
+      orderBy: { createdAt: 'desc' },
+      include: { lines: true },
+    });
+  }
 
   async create(input: CreateOrderInput) {
     const order = await this.prisma.$transaction(async (tx) => {
@@ -63,4 +82,41 @@ export class OrdersService {
 
     return order;
   }
+
+  async cancel(orderId: string) {
+    return this.prisma.$transaction(async (tx) => {
+        const order = await tx.order.findUnique({
+            where: { id: orderId },
+            include: { lines: true },
+        });
+        
+        if (!order) {
+            throw new NotFoundException(`Order not found: ${orderId}`);
+        }
+
+        if(order.status === 'CANCELLED'){
+            return order;
+        }
+
+        if(order.status === 'SHIPPED'){
+           throw new ConflictException(`Cannot cancel order with status: ${order.status}`);
+        }
+
+        for(const line of order.lines){
+            await tx.item.updateMany({
+                where: { id: line.itemId },
+                data: { stock: { increment: line.quantity }, 
+                version: { increment: 1 } ,
+            },
+            });
+        }
+
+        return tx.order.update({
+            where: { id: orderId },
+            data: { status: 'CANCELLED' },
+            include: { lines: true },
+        });
+        }
+    );
+    }
 }
