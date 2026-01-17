@@ -215,63 +215,51 @@ function App() {
       <h1>Mini Marketplace</h1>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
-        {/* Left: Create Item + Items */}
-        <div>
-          <h2>Create Item</h2>
-          <form onSubmit={onSubmit} style={{ display: 'grid', gap: 8 }}>
-            <label>
-              Name
-              <input
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="e.g. T-shirt"
-                style={{ display: 'block', width: '100%', padding: 8 }}
-              />
-            </label>
-
-            <label>
-              Price
-              <input
-                type="number"
-                value={price}
-                onChange={(e) => setPrice(Number(e.target.value))}
-                style={{ display: 'block', width: '100%', padding: 8 }}
-              />
-            </label>
-
-            <label>
-              Stock
-              <input
-                type="number"
-                value={stock}
-                onChange={(e) => setStock(Number(e.target.value))}
-                style={{ display: 'block', width: '100%', padding: 8 }}
-              />
-            </label>
-
-            <button type="submit" disabled={submitting}>
-              {submitting ? 'Creating...' : 'Create'}
-            </button>
-          </form>
-
-          {error && <p style={{ color: 'red' }}>{error}</p>}
-
-          <h2 style={{ marginTop: 24 }}>Items</h2>
-          <ul style={{ paddingLeft: 16 }}>
-            {items.map((item) => (
-              <li key={item.id} style={{ display: 'flex', justifyContent: 'space-between', gap: 12 }}>
-                <span>
-                  {item.name} / ¥{item.price} / stock: {item.stock}
-                </span>
-                <button onClick={() => addToCart(item.id)}>Add</button>
-              </li>
-            ))}
-          </ul>
+        {/* Left: Items */}
+        <div style={{ border: '1px solid #ddd', borderRadius: 8, padding: 16 }}>
+          <h2 style={{ marginTop: 0 }}>Items</h2>
+          {items.length === 0 ? (
+            <p style={{ opacity: 0.8 }}>No items yet. Create one below.</p>
+          ) : (
+            <ul style={{ paddingLeft: 0, margin: 0 }}>
+              {items.filter((item) => item.stock > 0).map((item) => (
+                <li key={item.id} style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  gap: 12,
+                  padding: '12px 0',
+                  borderBottom: '1px solid #eee',
+                  listStyle: 'none'
+                }}>
+                  <div>
+                    <div style={{ fontWeight: 'bold' }}>{item.name}</div>
+                    <div style={{ fontSize: 13, color: '#666' }}>
+                      ¥{item.price} / stock: {item.stock}
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => addToCart(item.id)}
+                    style={{
+                      padding: '6px 12px',
+                      background: '#007bff',
+                      color: '#fff',
+                      border: 'none',
+                      borderRadius: 4,
+                      cursor: 'pointer'
+                    }}
+                  >
+                    Add
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
 
         {/* Right: Checkout */}
-        <div>
-          <h2>Checkout</h2>
+        <div style={{ border: '1px solid #ddd', borderRadius: 8, padding: 16 }}>
+          <h2 style={{ marginTop: 0 }}>Checkout</h2>
 
           {orderError && (
             <div style={{ border: '1px solid #f99', padding: 12, marginBottom: 12 }}>
@@ -340,101 +328,182 @@ function App() {
               Clear cart
             </button>
           </div>
-
-          <hr style={{ margin: '24px 0' }} />
-
-          <section>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <h2 style={{ margin: 0 }}>Orders</h2>
-              <button onClick={loadOrders} disabled={loadingOrders}>
-                {loadingOrders ? 'Loading...' : 'Refresh'}
-              </button>
-            </div>
-
-            {ordersError && <p style={{ color: 'red' }}>{ordersError}</p>}
-
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginTop: 12 }}>
-              {/* Orders list */}
-              <div style={{ border: '1px solid #ddd', padding: 12 }}>
-                <h3>List</h3>
-                {orders.length === 0 ? (
-                  <p style={{ opacity: 0.8 }}>No orders yet</p>
-                ) : (
-                  <ul style={{ paddingLeft: 16 }}>
-                    {orders.map((o) => (
-                      <li key={o.id} style={{ marginBottom: 8 }}>
-                        <button
-                          onClick={() => onSelectOrder(o.id)}
-                          style={{
-                            textAlign: 'left',
-                            width: '100%',
-                            padding: 8,
-                            border: selectedOrderId === o.id ? '2px solid #999' : '1px solid #ccc',
-                            borderRadius: 6,
-                          }}
-                        >
-                          <div><b>{o.id}</b></div>
-                          <div style={{ fontSize: 12, opacity: 0.8 }}>
-                            status: {o.status} / total: ¥{o.total}
-                          </div>
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-
-              {/* Order detail */}
-              <div style={{ border: '1px solid #ddd', padding: 12 }}>
-                <h3>Detail</h3>
-
-                {!selectedOrderId ? (
-                  <p style={{ opacity: 0.8 }}>Select an order</p>
-                ) : loadingOrderDetail ? (
-                  <p>Loading...</p>
-                ) : orderDetailError ? (
-                  <p style={{ color: 'red' }}>{orderDetailError}</p>
-                ) : !selectedOrder ? (
-                  <p style={{ opacity: 0.8 }}>No detail</p>
-                ) : (
-                  <div>
-                    <div><b>ID:</b> {selectedOrder.id}</div>
-                    <div><b>Status:</b> {selectedOrder.status}</div>
-                    <div><b>Total:</b> ¥{selectedOrder.total}</div>
-
-                    <h4 style={{ marginTop: 12 }}>Lines</h4>
-                    <ul style={{ paddingLeft: 16 }}>
-                      {selectedOrder.lines.map((ln) => {
-                        const itemName = items.find((x) => x.id === ln.itemId)?.name ?? ln.itemId;
-                        return (
-                          <li key={ln.id}>
-                            {itemName} / qty: {ln.quantity} / unit: ¥{ln.unitPrice}
-                          </li>
-                        );
-                      })}
-                    </ul>
-
-                    {/* B7: Cancelボタン */}
-                    <button
-                      onClick={cancelSelectedOrder}
-                      disabled={cancelSubmitting || selectedOrder.status === 'CANCELLED'}
-                      style={{ marginTop: 12 }}
-                    >
-                      {cancelSubmitting ? 'Cancelling...' : 'Cancel'}
-                    </button>
-
-                    {selectedOrder.status === 'CANCELLED' && (
-                      <p style={{ marginTop: 8, opacity: 0.8 }}>
-                        Already cancelled (try clicking multiple times later to test idempotency)
-                      </p>
-                    )}
-                  </div>
-                )}
-              </div>
-            </div>
-          </section>
         </div>
       </div>
+
+      {/* Create Item section - full width */}
+      <section style={{ marginTop: 32, borderTop: '2px solid #ddd', paddingTop: 24 }}>
+        <h2 style={{ margin: '0 0 16px 0' }}>Create Item</h2>
+        <div style={{ border: '1px solid #ddd', borderRadius: 8, padding: 16, maxWidth: 400 }}>
+          <form onSubmit={onSubmit} style={{ display: 'grid', gap: 12 }}>
+            <label>
+              <span style={{ display: 'block', marginBottom: 4, fontWeight: 'bold' }}>Name</span>
+              <input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="e.g. T-shirt"
+                style={{ display: 'block', width: '100%', padding: 8, borderRadius: 4, border: '1px solid #ccc' }}
+              />
+            </label>
+
+            <label>
+              <span style={{ display: 'block', marginBottom: 4, fontWeight: 'bold' }}>Price</span>
+              <input
+                type="number"
+                value={price}
+                onChange={(e) => setPrice(Number(e.target.value))}
+                style={{ display: 'block', width: '100%', padding: 8, borderRadius: 4, border: '1px solid #ccc' }}
+              />
+            </label>
+
+            <label>
+              <span style={{ display: 'block', marginBottom: 4, fontWeight: 'bold' }}>Stock</span>
+              <input
+                type="number"
+                value={stock}
+                onChange={(e) => setStock(Number(e.target.value))}
+                style={{ display: 'block', width: '100%', padding: 8, borderRadius: 4, border: '1px solid #ccc' }}
+              />
+            </label>
+
+            <button
+              type="submit"
+              disabled={submitting}
+              style={{
+                padding: '10px 16px',
+                background: '#28a745',
+                color: '#fff',
+                border: 'none',
+                borderRadius: 4,
+                cursor: submitting ? 'not-allowed' : 'pointer',
+                fontWeight: 'bold'
+              }}
+            >
+              {submitting ? 'Creating...' : 'Create Item'}
+            </button>
+          </form>
+
+          {error && <p style={{ color: 'red', marginTop: 12 }}>{error}</p>}
+        </div>
+      </section>
+
+      {/* Orders section - full width at bottom */}
+      <section style={{ marginTop: 32, borderTop: '2px solid #ddd', paddingTop: 24 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
+          <h2 style={{ margin: 0 }}>Orders</h2>
+          <button onClick={loadOrders} disabled={loadingOrders}>
+            {loadingOrders ? 'Loading...' : 'Refresh'}
+          </button>
+        </div>
+
+        {ordersError && <p style={{ color: 'red' }}>{ordersError}</p>}
+
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: 24 }}>
+          {/* Orders list */}
+          <div style={{ border: '1px solid #ddd', borderRadius: 8, padding: 16 }}>
+            <h3 style={{ marginTop: 0 }}>List</h3>
+            {orders.length === 0 ? (
+              <p style={{ opacity: 0.8 }}>No orders yet</p>
+            ) : (
+              <ul style={{ paddingLeft: 16, margin: 0 }}>
+                {orders.map((o) => (
+                  <li key={o.id} style={{ marginBottom: 8, listStyle: 'none' }}>
+                    <button
+                      onClick={() => onSelectOrder(o.id)}
+                      style={{
+                        textAlign: 'left',
+                        width: '100%',
+                        padding: 12,
+                        border: selectedOrderId === o.id ? '2px solid #666' : '1px solid #ccc',
+                        borderRadius: 6,
+                        background: selectedOrderId === o.id ? '#f5f5f5' : '#fff',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      <div style={{ fontWeight: 'bold', marginBottom: 4 }}>{o.id.slice(0, 8)}...</div>
+                      <div style={{ fontSize: 13, color: '#666' }}>
+                        {o.status} / ¥{o.total}
+                      </div>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+          {/* Order detail */}
+          <div style={{ border: '1px solid #ddd', borderRadius: 8, padding: 16 }}>
+            <h3 style={{ marginTop: 0 }}>Detail</h3>
+
+            {!selectedOrderId ? (
+              <p style={{ opacity: 0.8 }}>Select an order from the list</p>
+            ) : loadingOrderDetail ? (
+              <p>Loading...</p>
+            ) : orderDetailError ? (
+              <p style={{ color: 'red' }}>{orderDetailError}</p>
+            ) : !selectedOrder ? (
+              <p style={{ opacity: 0.8 }}>No detail</p>
+            ) : (
+              <div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '8px 16px', marginBottom: 16 }}>
+                  <span style={{ fontWeight: 'bold' }}>ID:</span>
+                  <span>{selectedOrder.id}</span>
+                  <span style={{ fontWeight: 'bold' }}>Status:</span>
+                  <span style={{
+                    color: selectedOrder.status === 'CANCELLED' ? '#c00' : selectedOrder.status === 'CONFIRMED' ? '#080' : '#666'
+                  }}>{selectedOrder.status}</span>
+                  <span style={{ fontWeight: 'bold' }}>Total:</span>
+                  <span>¥{selectedOrder.total}</span>
+                </div>
+
+                <h4 style={{ marginBottom: 8 }}>Order Lines</h4>
+                <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: 16 }}>
+                  <thead>
+                    <tr style={{ borderBottom: '1px solid #ddd' }}>
+                      <th style={{ textAlign: 'left', padding: '8px 0' }}>Item</th>
+                      <th style={{ textAlign: 'right', padding: '8px 0' }}>Qty</th>
+                      <th style={{ textAlign: 'right', padding: '8px 0' }}>Unit Price</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {selectedOrder.lines.map((ln) => {
+                      const itemName = items.find((x) => x.id === ln.itemId)?.name ?? ln.itemId;
+                      return (
+                        <tr key={ln.id} style={{ borderBottom: '1px solid #eee' }}>
+                          <td style={{ padding: '8px 0' }}>{itemName}</td>
+                          <td style={{ textAlign: 'right', padding: '8px 0' }}>{ln.quantity}</td>
+                          <td style={{ textAlign: 'right', padding: '8px 0' }}>¥{ln.unitPrice}</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+
+                <button
+                  onClick={cancelSelectedOrder}
+                  disabled={cancelSubmitting || selectedOrder.status === 'CANCELLED'}
+                  style={{
+                    padding: '8px 16px',
+                    background: selectedOrder.status === 'CANCELLED' ? '#ccc' : '#c00',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: 4,
+                    cursor: selectedOrder.status === 'CANCELLED' ? 'not-allowed' : 'pointer',
+                  }}
+                >
+                  {cancelSubmitting ? 'Cancelling...' : 'Cancel Order'}
+                </button>
+
+                {selectedOrder.status === 'CANCELLED' && (
+                  <p style={{ marginTop: 8, opacity: 0.8, fontSize: 13 }}>
+                    This order has been cancelled
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

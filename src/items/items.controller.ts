@@ -1,7 +1,7 @@
-import { Body, Controller , Get, Post, UsePipes} from '@nestjs/common';
+import { Body, Controller , Delete, Get, Post, UsePipes, Param} from '@nestjs/common';
 import { ItemsService } from './items.service';
 import { CreateItemSchema } from './items.schema';
-import type { CreateItemInput } from './items.schema';
+import type { CreateItemInput} from './items.schema';
 import { ZodValidationPipe } from '../common/zod-validation.pipe';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
@@ -17,6 +17,11 @@ export class ItemsController {
     @UsePipes(new ZodValidationPipe(CreateItemSchema))
     create(@Body() body: CreateItemInput){
         return this.items.create(body);
+    }
+
+    @Delete(':id')
+    delete(@Param('id') id: string){
+        return this.items.delete(id);
     }
 
     @Get()

@@ -12,6 +12,12 @@ export class ItemsService {
         });
     }
 
+    delete(deleteId: string){
+        return this.prisma.item.delete({
+            where: {id: deleteId},
+        });
+    }
+
     list(){
         return this.prisma.item.findMany({orderBy:{createdAt:'desc'}});
     }

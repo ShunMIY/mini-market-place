@@ -6,4 +6,9 @@ export const CreateItemSchema = z.object({
     stock: z.number().int().nonnegative(),
 });
 
+// export const DeleteItemSchema = z.object({
+//     id: z.string().cuid(),
+// });
+
 export type CreateItemInput = z.infer<typeof CreateItemSchema>;
+// export type DeleteItemInput = z.infer<typeof DeleteItemSchema>;

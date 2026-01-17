@@ -1,4 +1,4 @@
-import { Body, Controller,Param, Post, UsePipes, Get } from '@nestjs/common';
+import { Body, Controller,Param, Post, UsePipes, Get, Delete } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import type { CreateOrderInput } from './orders.schemas';
 import { CreateOrderSchema } from './orders.schemas';
@@ -41,6 +41,12 @@ export class OrdersController {
     @ApiResponse({ status: 404, description: 'Not found' })
     get(@Param('id') id: string){
         return this.orders.get(id);
+    }
+
+    @Delete(':id')
+    @ApiOperation({ summary: 'Delete an order by id' })
+    delete(@Param('id') id: string){
+        return this.orders.delete(id);
     }
 
     @Get()

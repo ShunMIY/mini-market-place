@@ -18,6 +18,12 @@ export class OrdersService {
     return order;
   }
 
+  async delete(orderId: string) {
+    return this.prisma.order.delete({
+      where: { id: orderId },
+    });
+  }
+
   async list() {
     return this.prisma.order.findMany({
       orderBy: { createdAt: 'desc' },
