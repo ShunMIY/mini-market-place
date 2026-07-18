@@ -1,98 +1,118 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Mini MarketPlace
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+FullStack typescript MarketPlace Application
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## TechStack
+FrontEnd: React+Vite
+BackEnd: NestJS
+ORM: Prisma
+Document: Swagger/OpenAPI
 
-## Description
+## Directory structure
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Project setup
-
-```bash
-$ npm install
+```text
+mini-marketplace/
+├── src/                         # メインAPI（NestJS）
+│   ├── common/                  # 共通処理（Zod バリデーション）
+│   ├── items/                   # 商品のコントローラー・サービス・スキーマ
+│   ├── orders/                  # 注文のコントローラー・サービス・スキーマ
+│   ├── prisma/                  # Prisma の NestJS モジュールとサービス
+│   ├── app.module.ts            # APIモジュールの定義
+│   └── main.ts                  # APIの起動点、Swagger の設定
+├── prisma/
+│   ├── schema.prisma            # SQLite のスキーマ定義
+│   ├── migrations/              # Prisma マイグレーション
+│   └── dev.db                   # ローカル開発用 SQLite データベース
+├── test/                        # API の E2E テスト
+├── web/                         # フロントエンド（React + Vite）
+│   ├── src/
+│   │   ├── lib/api.ts           # API クライアント
+│   │   ├── App.tsx              # メイン画面
+│   │   └── main.tsx             # React の起動点
+│   ├── public/                  # 静的ファイル
+│   └── vite.config.ts           # Vite と API プロキシの設定
+├── api/                         # 別途配置された NestJS API プロジェクト
+├── package.json                 # ルートAPI用の npm スクリプト
+└── web/package.json             # フロントエンド用の npm スクリプト
 ```
 
-## Compile and run the project
+通常はルート直下の `src/` と `prisma/`、および `web/` を使用します。`api/` は同様の API 構成を持つ別プロジェクトです。
+
+## 必要環境
+
+- Node.js
+- npm
+
+## 起動方法
+
+API とフロントエンドは、それぞれ別のターミナルで起動します。
+
+### 1. API を起動する
+
+ルートディレクトリで依存関係をインストールしてから、開発サーバーを起動します。
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npm install
+npm run start:dev
 ```
 
-## Run tests
+API はデフォルトで `http://localhost:3000` で起動します。ポートを変更する場合は `PORT` 環境変数を指定してください。
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+PORT=3001   
 ```
 
-## Deployment
+### 2. フロントエンドを起動する
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+別のターミナルで `web/` に移動し、開発サーバーを起動します。
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+cd web
+npm install
+npm run dev
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+起動後に表示される URL（通常は `http://localhost:5173`）をブラウザで開いてください。
 
-## Resources
+## Swagger
 
-Check out a few resources that may come in handy when working with NestJS:
+API 起動中は、Swagger UI を次の URL で利用できます。
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+- `http://localhost:3000/docs`
 
-## Support
+Swagger の定義は [`src/main.ts`](src/main.ts) で設定しています。
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## フロントエンドからの API 接続
 
-## Stay in touch
+フロントエンドは [`web/src/lib/api.ts`](web/src/lib/api.ts) から `/api` を先頭に付けて API を呼び出します。
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+```text
+ブラウザ: /api/items
+    ↓ Vite のプロキシ
+API:     http://localhost:3000/items
+```
 
-## License
+このプロキシは [`web/vite.config.ts`](web/vite.config.ts) で設定されています。API のポートを `3001` などに変更した場合は、同ファイルの `target` も変更してください。
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+## データベース
+
+SQLite のデータベースファイルは `prisma/dev.db` です。スキーマを変更した場合は、Prisma のマイグレーションを作成・適用します。
+
+```bash
+npx prisma migrate dev --name <migration-name>
+```
+
+## よく使うコマンド
+
+```bash
+# API
+npm run start:dev    # 開発サーバー（ファイル監視）
+npm run build        # ビルド
+npm run test         # ユニットテスト
+npm run test:e2e     # E2E テスト
+
+# フロントエンド（web/ 内で実行）
+npm run dev          # 開発サーバー
+npm run build        # 本番ビルド
+npm run lint         # Lint
+```
