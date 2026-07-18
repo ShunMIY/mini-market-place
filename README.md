@@ -31,12 +31,9 @@ mini-marketplace/
 │   │   └── main.tsx             # React の起動点
 │   ├── public/                  # 静的ファイル
 │   └── vite.config.ts           # Vite と API プロキシの設定
-├── api/                         # 別途配置された NestJS API プロジェクト
 ├── package.json                 # ルートAPI用の npm スクリプト
 └── web/package.json             # フロントエンド用の npm スクリプト
 ```
-
-通常はルート直下の `src/` と `prisma/`、および `web/` を使用します。`api/` は同様の API 構成を持つ別プロジェクトです。
 
 ## 必要環境
 
