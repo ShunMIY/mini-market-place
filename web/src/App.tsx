@@ -150,15 +150,70 @@ function App() {
     }
   }
 
-  return <div style={{ padding: 24, maxWidth: 900 }}>
-    <h1>Mini Marketplace</h1>
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
-      <ItemsList items={items} onAddToCart={addToCart} />
-      <ShoppingCart cartLines={cartLines} items={items} error={orderError} insufficient={insufficient} isSubmitting={orderSubmitting} onQuantityChange={setQty} onSubmit={submitOrder} onClear={() => { clearOrderErrors(); setCart({}) }} />
-    </div>
-    <CreateItemForm name={name} price={price} stock={stock} error={error} isSubmitting={submitting} onNameChange={setName} onPriceChange={setPrice} onStockChange={setStock} onSubmit={onSubmit} />
-    <OrdersSection items={items} orders={orders} error={ordersError} isLoading={loadingOrders} selectedOrderId={selectedOrderId} selectedOrder={selectedOrder} detailError={orderDetailError} isDetailLoading={loadingOrderDetail} isCancelling={cancelSubmitting} onRefresh={loadOrders} onSelectOrder={onSelectOrder} onCancelOrder={cancelSelectedOrder} />
-  </div>
+  return (
+    <main className="min-h-screen bg-muted/30">
+      <div className="container mx-auto max-w-6xl p-6">
+        <header className="mb-8">
+          <h1 className="text-3xl font-bold tracking-tight">
+            Mini Marketplace
+          </h1>
+          <p className="text-muted-foreground">
+            Browse items and place orders.
+          </p>
+        </header>
+
+        <section className="grid gap-6 md:grid-cols-2">
+          <ItemsList
+            items={items}
+            onAddToCart={addToCart}
+          />
+
+          <ShoppingCart
+            cartLines={cartLines}
+            items={items}
+            error={orderError}
+            insufficient={insufficient}
+            isSubmitting={orderSubmitting}
+            onQuantityChange={setQty}
+            onSubmit={submitOrder}
+            onClear={() => {
+              clearOrderErrors()
+              setCart({})
+            }}
+          />
+        </section>
+
+        <section className="mt-8 space-y-6">
+          <CreateItemForm
+            name={name}
+            price={price}
+            stock={stock}
+            error={error}
+            isSubmitting={submitting}
+            onNameChange={setName}
+            onPriceChange={setPrice}
+            onStockChange={setStock}
+            onSubmit={onSubmit}
+          />
+
+          <OrdersSection
+            items={items}
+            orders={orders}
+            error={ordersError}
+            isLoading={loadingOrders}
+            selectedOrderId={selectedOrderId}
+            selectedOrder={selectedOrder}
+            detailError={orderDetailError}
+            isDetailLoading={loadingOrderDetail}
+            isCancelling={cancelSubmitting}
+            onRefresh={loadOrders}
+            onSelectOrder={onSelectOrder}
+            onCancelOrder={cancelSelectedOrder}
+          />
+        </section>
+      </div>
+    </main>
+  )
 }
 
 export default App
