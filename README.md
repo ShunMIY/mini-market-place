@@ -1,6 +1,7 @@
 # Mini MarketPlace
 
-FullStack typescript MarketPlace Application
+フルスタックTypescriptのマーケットプレイスアプリケーションです。
+ユーザは商品を登録、削除、カートに入れて注文することができます。オーダーは発送ステータスを持ち、発送後に発送済みにステータスを変更できます。
 
 ## TechStack
 FrontEnd: React+Vite
